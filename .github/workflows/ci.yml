@@ -1,0 +1,39 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# CI for the demo "client" app: TWO stages, in order.
+#   1. Code Check      the app's own correctness checks
+#   2. Security Check  our security gate; runs ONLY if the Code Check passed
+# ─────────────────────────────────────────────────────────────────────────────
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  code-check:
+    name: Code Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      # Note: we deliberately do NOT `pip install -r requirements.txt` here. If a change adds
+      # an AI-hallucinated (possibly malicious) package, installing it BEFORE the security check
+      # is exactly the attack the Security Check exists to stop.
+      - name: Syntax check (all Python files compile)
+        run: python -m compileall -q .
+
+  security-check:
+    name: Security Check
+    needs: code-check # runs only after the Code Check passes
+    uses: rohitmoganti-png/security-gate/.github/workflows/security-gate.yml@main
+    with:
+      gate-ref: main # during development; pin both to a commit SHA for clients
+    permissions:
+      contents: read
