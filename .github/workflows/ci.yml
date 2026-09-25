@@ -35,5 +35,7 @@ jobs:
     uses: rohitmoganti-png/security-gate/.github/workflows/security-gate.yml@main
     with:
       gate-ref: main # during development; pin both to a commit SHA for clients
+    secrets:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} #  this one secret, for the AI review (check 7)
     permissions:
       contents: read
