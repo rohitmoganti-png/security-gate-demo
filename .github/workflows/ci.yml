@@ -39,3 +39,4 @@ jobs:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} #  this one secret, for the AI review (check 7)
     permissions:
       contents: read
+      statuses: write # lets the gate add a "Security Report" row (Details = link to the HTML report)
