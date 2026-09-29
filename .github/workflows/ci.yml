@@ -40,3 +40,4 @@ jobs:
     permissions:
       contents: read
       statuses: write # lets the gate add a "Security Report" row (Details = link to the HTML report)
+      id-token: write # the gate may sign in to AWS via GitHub OIDC (only used if BEDROCK_ROLE_ARN is set)
